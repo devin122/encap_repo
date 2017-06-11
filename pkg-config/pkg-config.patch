@@ -1,0 +1,65 @@
+diff -cr a/glib/glib/libcharset/localcharset.c b/glib/glib/libcharset/localcharset.c
+*** a/glib/glib/libcharset/localcharset.c	2014-02-08 12:57:06.000000000 -0500
+--- b/glib/glib/libcharset/localcharset.c	2017-06-11 19:14:18.330154695 -0400
+***************
+*** 28,33 ****
+--- 28,34 ----
+  #include <stdio.h>
+  #include <string.h>
+  #include <stdlib.h>
++ #include <relocate.h>
+  
+  #if defined _WIN32 || defined __WIN32__
+  # define WIN32_NATIVE
+***************
+*** 121,127 ****
+  	 necessary for running the testsuite before "make install".  */
+        dir = getenv ("CHARSETALIASDIR");
+        if (dir == NULL || dir[0] == '\0')
+! 	dir = relocate (LIBDIR);
+  
+        /* Concatenate dir and base into freshly allocated file_name.  */
+        {
+--- 122,129 ----
+  	 necessary for running the testsuite before "make install".  */
+        dir = getenv ("CHARSETALIASDIR");
+        if (dir == NULL || dir[0] == '\0')
+! //	dir = relocate (LIBDIR);
+! 		  dir = prefix_path("/lib");
+  
+        /* Concatenate dir and base into freshly allocated file_name.  */
+        {
+diff -cr a/main.c b/main.c
+*** a/main.c	2017-03-19 10:53:45.000000000 -0400
+--- b/main.c	2017-06-11 19:08:02.210161214 -0400
+***************
+*** 34,39 ****
+--- 34,40 ----
+  #include <windows.h>
+  #undef STRICT
+  #endif
++ #include <relocate.h>
+  
+  char *pcsysrootdir = NULL;
+  char *pkg_config_pc_path = NULL;
+***************
+*** 311,318 ****
+    g_free (lpath);
+    g_free (shpath);
+  #else
+!   pkg_config_pc_path = PKG_CONFIG_PC_PATH;
+  #endif
+  }
+  
+  static gboolean
+--- 312,321 ----
+    g_free (lpath);
+    g_free (shpath);
+  #else
+! //  pkg_config_pc_path = PKG_CONFIG_PC_PATH;
+! 	pkg_config_pc_path = prefix_path_list("share/pkgconfig:lib/pkgconfig");
+  #endif
++ 
+  }
+  
+  static gboolean

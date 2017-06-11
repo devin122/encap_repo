@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<encap_profile profile_ver="1.0" pkgspec="pkg-config-0.29.2">
+	<ChangeLog>
+		<change version="0.29.2">Initial commit</change>
+	</ChangeLog>
+	<prereq package="librelocate-0.1.0" use_lib="yes"/>
+
+	<environment
+		variable="LIBS"
+		value=" -lrelocate"
+		type="append"
+	/>
+	
+	<source
+	url="https://pkg-config.freedesktop.org/releases/pkg-config-0.29.2.tar.gz">
+		<patch url="https://raw.githubusercontent.com/devin122/encap_repo/pkg-config/pkg-config.patch"/>
+		<configure>
+			echo "LIBS = $LIBS"
+			echo "CPPFLAGS =$CPPFLAGS"
+			${srcdir}/configure \
+				--prefix="${ENCAP_SOURCE}/${ENCAP_PKGNAME}" \
+				--sysconfdir="${ENCAP_TARGET}/etc" \
+				--with-internal-glib \
+				--disable-host-tool
+		</configure>
+	</source>
+</encap_profile>
