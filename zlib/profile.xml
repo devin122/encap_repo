@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<encap_profile profile_ver="1.0" pkgspec="zlib-1.2.11">
+	<ChangeLog>
+		<change version="1.2.11">Initial commit</change>
+	</ChangeLog>
+	<prereq package="pkg-config-0.29.1" use_bin="yes"/>
+
+	<source
+	url="http://www.zlib.net/zlib-1.2.11.tar.gz">
+		<configure>
+			echo "LIBS = $LIBS"
+			echo "CPPFLAGS =$CPPFLAGS"
+			${srcdir}/configure \
+				--prefix="${ENCAP_SOURCE}/${ENCAP_PKGNAME}" \
+				--sysconfdir="${ENCAP_TARGET}/etc" \
+
+		</configure>
+		<build>
+			make
+			make check
+			sed 's/^prefix=.*/prefix=ENCAP_PREFIX/' zlib.pc > zlib.pc.tmp
+			rm zlib.pc
+			mv zlib.pc.tmp zlib.pc
+		</build>
+	</source>
+	<prepackage>true</prepackage>
+	<include_file name="preinstall" mode="0766">
+#!/bin/sh
+PKG_INSTALL_DIR=$ENCAP_SOURCE/$ENCAP_PKGNAME
+sed "s#ENCAP_PREFIX#$ENCAP_SOURCE/$ENCAP_PKGNAME#" $PKG_INSTALL_DIR/lib/pkgconfig/zlib.pc > $PKG_INSTALL_DIR/pc.temp
+rm $PKG_INSTALL_DIR/lib/pkgconfig/zlib.pc
+mv $PKG_INSTALL_DIR/pc.temp $PKG_INSTALL_DIR/lib/pkgconfig/zlib.pc
+	</include_file>
+	
+</encap_profile>
